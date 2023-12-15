@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Get, Logger, Param, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Logger, Param, Post, Request, UseGuards } from "@nestjs/common";
 import { FindUserDto } from "./dto/find-user.dto";
 import { UserI } from "src/schemas/user.schema";
 import { UserService } from "./user.service";
 import { newUserDto } from "./dto/new-user.dto";
+import { AuthGuard } from "@nestjs/passport";
 
 @Controller('user')
 export class UserController {
@@ -39,6 +40,7 @@ export class UserController {
         }
     }
 
+    @UseGuards(AuthGuard("jwt"))
     @Get('/:username')
     async findUser(@Param() params: FindUserDto): Promise<UserI> {
         Logger.log(JSON.stringify(params), 'AppController')
@@ -53,4 +55,9 @@ export class UserController {
         }
     }
     
+    @UseGuards(AuthGuard('jwt'))
+    @Get('profile')
+    getProfile(@Request() req) {
+      return req.user;
+    }
 }
