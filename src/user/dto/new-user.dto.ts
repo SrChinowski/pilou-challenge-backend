@@ -9,4 +9,5 @@ export class newUserDto {
         phone: String
     };
     blood_type?: BloodTypes;
+    password: String;
 }

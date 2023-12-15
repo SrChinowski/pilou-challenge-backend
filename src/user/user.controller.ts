@@ -8,30 +8,28 @@ import { newUserDto } from "./dto/new-user.dto";
 export class UserController {
 
     constructor(
-        private userService: UserService
+        private userService: UserService,
     ) {}
 
     @Get()
     getHello(): string {
-        Logger.log("here")
-        console.log("here")
       return this.userService.getHello();
     }
-
-    // @Post(':id')
-    // async findOne(@Param('id') id: string ): Promise<UserI> {
-    //     const user = this.userService.findOne(id);
-
-    //     if(user) return user;
-    //     else return null; 
-    // }
 
     @Post('/new')
     async newUser(@Body("user") userDto: newUserDto): Promise<UserI> {
         try {
             const user = await this.userService.createUser(userDto);
             if (user) {
-                return user;
+                const auth = await this.userService.createHash(
+                    user._id,
+                    userDto.password
+                );
+                if (auth)
+                    return user;
+                else {
+                    throw new BadRequestException('No se pudo crear el usuario');
+                }
             } else {
                 throw new BadRequestException('No se pudo crear el usuario');
             }
@@ -39,4 +37,18 @@ export class UserController {
             throw new BadRequestException(error.message);
         }
     }
+
+    @Get('/:username')
+    async findUser(@Param() params: FindUserDto): Promise<UserI> {
+        try {
+            const user = await this.userService.findOne(params.username);
+            if (user) 
+                return user;
+            else 
+                throw new BadRequestException('No se pudo encontrar el usuario');
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+    }
+    
 }
