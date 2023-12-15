@@ -12,7 +12,8 @@ export enum BloodTypes {
 }
 
 export interface UserI extends Document {
-    readonly username: String;
+    readonly _id: Schema.Types.ObjectId; // id de mongo
+    readonly username: String; // Nombre de usuario para el login
     readonly name: String;
     readonly last_name: String;
     readonly emergency_contact: {
@@ -20,9 +21,9 @@ export interface UserI extends Document {
         readonly phone: String
     };
     readonly blood_type?: BloodTypes;
-    readonly active: Boolean; 
+    readonly active: Boolean;  // Estatus parta borrado lógico
     readonly created_at?: Date; 
-    readonly metadata?: {}
+    readonly metadata?: Record<string, any>;
 }
 
 export const UserSchema = new Schema({
