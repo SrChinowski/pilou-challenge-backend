@@ -18,6 +18,7 @@ export class UserController {
 
     @Post('/new')
     async newUser(@Body("user") userDto: newUserDto): Promise<UserI> {
+        Logger.log(JSON.stringify(userDto), 'AppController')
         try {
             const user = await this.userService.createUser(userDto);
             if (user) {
@@ -40,6 +41,7 @@ export class UserController {
 
     @Get('/:username')
     async findUser(@Param() params: FindUserDto): Promise<UserI> {
+        Logger.log(JSON.stringify(params), 'AppController')
         try {
             const user = await this.userService.findOne(params.username);
             if (user) 
