@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { Logger } from '@nestjs/common';
 
 declare const module: any;
 
@@ -14,4 +15,4 @@ async function bootstrap() {
     module.hot.dispose(() => app.close());
   }
 }
-bootstrap();
+bootstrap().then(() => Logger.log('Service listening 👍 3000', "Main"));
