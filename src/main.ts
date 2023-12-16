@@ -8,7 +8,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule,{
     logger: ['log', 'fatal', 'error', 'warn', 'debug', 'verbose']
   });
-  await app.listen(3000);
+  app.enableCors();
+  await app.listen(5000);
 
   if (module.hot) {
     module.hot.accept();

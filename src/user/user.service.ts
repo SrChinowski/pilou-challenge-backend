@@ -5,6 +5,7 @@ import { FindUserDto } from './dto/find-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { newUserDto } from './dto/new-user.dto';
 import { AuthI } from 'src/schemas/auth.schema';
+import { updateUserDto } from './dto/update-user';
 
 @Injectable()
 export class UserService {
@@ -39,6 +40,16 @@ export class UserService {
         }
     }
 
+    async findAll(): Promise<UserI[]|undefined> {
+        Logger.log(`Buscando usuarios`, 'UserService')
+        try {
+            const user = await this.userModel.find();
+            return user
+        } catch (error) {
+            return undefined;
+        }
+    }
+
     async createUser(user: newUserDto): Promise<UserI> {
         Logger.debug(user)
         const newUser = new this.userModel(user);
@@ -53,6 +64,16 @@ export class UserService {
             throw new InternalServerErrorException(`Error al crear el usuario: ${error.message}`, 'UserService');
         }
 
+    }
+
+    async updateUser(user: updateUserDto): Promise<UserI> {
+        try {
+            const updatedUser = await this.userModel.findByIdAndUpdate(user._id, user, {new: true});
+            return updatedUser;
+        } catch (error) {
+            Logger.error(`Error al actualizar el usuario: ${error.message}`, 'UserService');
+            throw new InternalServerErrorException(`Error al actualizar el usuario: ${error.message}`, 'UserService');
+        } 
     }
 
     async createHash(user: ObjectId, hash: String): Promise<AuthI> {
